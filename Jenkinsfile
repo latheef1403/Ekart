@@ -57,7 +57,7 @@ pipeline {
             }
         }
      
-        /* Deploy war/jar/ear file through maven */
+        /* Deploy war/jar/ear file through maven we need to change url in pom.xml file */
         stage('Deploy to Nexus'){
             steps{
                 withMaven(globalMavenSettingsConfig: 'New-Global-Config-File', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true){
