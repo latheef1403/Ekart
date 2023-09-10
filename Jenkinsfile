@@ -57,7 +57,7 @@ pipeline {
             }
         }
      
-        /* Deploy war/jar/ear file through maven we need to change url in pom.xml file */
+        /* Deploy war/jar/ear file through maven */
         stage('Deploy to Nexus'){
             steps{
                 withMaven(globalMavenSettingsConfig: 'New-Global-Config-File', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true){
@@ -72,8 +72,8 @@ pipeline {
                 script{
                     withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                         
-                        sh "docker build -t shopping-cart-1 -f docker/Dockerfile ."
-                        sh "docker tag  shopping-cart chinnayya339/shopping-cart-1:v1.1.0"
+                        sh "docker build -t shopping_cart -f docker/Dockerfile ."
+                        sh "docker tag  shopping_cart chinnayya339/shopping_cart:v3.1.0"
                 
                     }
                 }
@@ -83,7 +83,7 @@ pipeline {
         /* To Scan image to Find vulnerabilities in image */
         stage("TRIVY IMAGE SCAN"){
             steps{
-                sh " trivy image chinnayya339/shopping-cart-1:v1.1.0"
+                sh " trivy image chinnayya339/shopping_cart:v3.1.0"
             }
         }
         
@@ -93,11 +93,18 @@ pipeline {
                 script{
                     withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                         
-                        sh "docker push chinnayya339/shopping-cart-1:v1.1.0"
-                        sh "docker run --name Ekart -d -p 8070:8070 chinnayya339/shopping-cart-1:v1.1.0"
+                        sh "docker push chinnayya339/shopping_cart:v3.1.0"
+                        sh "docker run --name Ekart-Shopping-1 -d -p 8070:8070 chinnayya339/shopping_cart:v3.1.0"
                         
                     }
                 }
+            }
+        }
+        
+        /* Sending Build History to Email */
+        stage('Email Trigger'){
+             steps{
+                 emailext(attachLog: true, body: 'Jenkins-Project Build History', subject: 'Jenkins-Project Build History', to: 'chinthayadav6@gmail.com,vennar456@gmail.com')
             }
         }
     }
