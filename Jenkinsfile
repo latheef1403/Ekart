@@ -93,7 +93,7 @@ pipeline {
                 script{
                     withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                         
-                        sh "docker push chinnayya339/shopping-cart:v1.0.0"
+                        sh "docker push chinnayya339/shopping-cart-1:v1.1.0"
                         sh "docker run --name Ekart -d -p 8070:8070 chinnayya339/shopping-cart-1:v1.1.0"
                         
                     }
